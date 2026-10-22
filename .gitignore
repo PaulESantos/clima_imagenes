@@ -1,0 +1,58 @@
+# Repositorio público por lista permitida. Todo archivo nuevo queda local
+# hasta que se clasifique expresamente para publicación.
+/*
+!/.gitignore
+!/README.md
+!/DESCRIPTION
+!/app.R
+!/codigo_gee_downscaling_clima_anta.js
+!/correccion_clima_gee_pisco.R
+!/preparar_datos_app.R
+!/desplegar_shinyapps.R
+!/desplegar_shinyapps.ps1
+!/iniciar_app.ps1
+!/netlify.toml
+!/AUDITORIA_VALIDEZ_TECNICA_2026-10-21.md
+!/VALIDACION_RED_ESTACIONES_2026-10-21.md
+!/R/
+!/scripts/
+!/www/
+!/app_data/
+!/docs/
+!/portal/
+!/public_data/
+
+# Solo código y recursos de interfaz en estas carpetas.
+/R/*
+!/R/*.R
+/scripts/*
+!/scripts/*.R
+!/scripts/build_portal.mjs
+/www/*
+!/www/custom.css
+!/www/logo_anta.jpg
+
+# Rásteres, RDS, pruebas y CSV internos quedan locales.
+/app_data/*
+
+# Solo productos públicos agregados, generados de forma explícita.
+/public_data/*
+!/public_data/README.md
+!/public_data/series_anuales_2001_2025_anta.csv
+!/public_data/resumen_hidroclimatico_distrital_anta.csv
+!/public_data/validacion_red_estaciones.csv
+!/public_data/distritos_anta.geojson
+
+/docs/*
+!/docs/*.md
+
+/portal/*
+!/portal/index.html
+!/portal/datos.html
+!/portal/styles.css
+.Rproj.user
+.Rhistory
+.RData
+.httr-oauth
+.DS_Store
+.quarto
