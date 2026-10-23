@@ -3,12 +3,17 @@
 # Municipalidad Provincial de Anta - Gerencia de Desarrollo Urbano y Rural
 # ==============================================================================
 
-suppressPackageStartupMessages({
-  library(sf)
-  library(terra)
-  library(dplyr)
-  library(tidyr)
-})
+# Shiny carga automáticamente todos los archivos de R/ antes de evaluar
+# app.R. En Connect Cloud desde GitHub solo se sirve cloud_lite y no están
+# presentes los datos de la aplicación espacial ni sus paquetes.
+if (file.exists("app_data/resumen_distrital.rds")) {
+  suppressPackageStartupMessages({
+    library(sf)
+    library(terra)
+    library(dplyr)
+    library(tidyr)
+  })
+}
 
 # Formateadores numéricos consistentes
 fmt_num <- function(x, digits = 0) {
