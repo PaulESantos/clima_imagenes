@@ -5,6 +5,7 @@
 !/README.md
 !/DESCRIPTION
 !/app.R
+!/manifest.json
 !/codigo_gee_downscaling_clima_anta.js
 !/correccion_clima_gee_pisco.R
 !/preparar_datos_app.R

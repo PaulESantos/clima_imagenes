@@ -5,6 +5,13 @@
 # Periodo de Monitoreo: 2001–2025 (25 Años)
 # ==============================================================================
 
+# En Connect Cloud desde GitHub no se incluyen los rásteres locales. En ese
+# caso, servir la edición distrital autónoma incluida en el repositorio.
+if (identical(Sys.getenv("ANTA_CLOUD_LITE"), "1") ||
+    !file.exists("app_data/resumen_distrital.rds")) {
+  shiny::shinyAppDir("cloud_lite")
+} else {
+
 # Soporte de bibliotecas locales para Windows. RStudio no siempre propaga
 # R_LIBS_USER al iniciar una aplicación; por ello se incorpora la biblioteca
 # de usuario de la versión activa cuando exista.
@@ -295,3 +302,4 @@ server <- function(input, output, session) {
 
 # Ejecutar la aplicación
 shinyApp(ui = ui, server = server)
+}
