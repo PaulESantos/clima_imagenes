@@ -111,13 +111,58 @@ ui <- page_fluid(
     )
   ),
   
-  # Barra de Navegación Principal con Pills
+  # Banner de contexto técnico y alcance de la plataforma
   div(
     class = "container-fluid px-4 pt-3",
-    div(class = "alert alert-warning mb-0",
-        tags$strong("Beta referencial: "),
-        "estos mapas y series son estimaciones de modelos matemáticos ajustados con PISCO, no mediciones directas de cada lugar. Hay pocas estaciones para comprobar su exactitud en Anta y se detectaron diferencias locales, especialmente de temperatura en Soraypampa. Sirven para explorar patrones climáticos generales; cualquier decisión sobre una parcela u obra requiere datos y evaluación local. Consulte Datos y Metodología.")
+    div(
+      class = "platform-context-banner",
+      # Columna 1: qué es
+      div(
+        class = "pcb-block pcb-block-what",
+        tags$span(class = "pcb-label", icon("database", class = "me-1"), "BASE DE DATOS"),
+        tags$p(class = "pcb-text",
+          "Estimaciones de temperatura y precipitación a ",
+          tags$strong("30 m de resolución (2001–2025)"),
+          " generadas mediante modelado espacial en Google Earth Engine
+          (ERA5-Land · CHIRPS · SRTM · Sentinel-2) y ajustadas con las
+          mallas oficiales del SENAMHI ",
+          tags$strong("(PISCOp v3.0 · PISCOt v1.2 · PISCOeo_pm)"),
+          " como referencias regionales. No son lecturas directas ni valores
+          de exactitud comprobada para cada punto del territorio."
+        )
+      ),
+      div(class = "pcb-divider"),
+      # Columna 2: contraste disponible
+      div(
+        class = "pcb-block pcb-block-validation",
+        tags$span(class = "pcb-label", icon("chart-line", class = "me-1"), "CONTRASTE DISPONIBLE"),
+        tags$p(class = "pcb-text",
+          "El ajuste usa PISCO como referencia regional, pero no certifica
+          la precisión local a 30 m. El contraste con las dos estaciones disponibles
+          dentro de Anta detectó sesgos térmicos medios de +1,81 °C en Ancachuro
+          y +4,92 °C en Soraypampa. Estas estaciones pudieron contribuir a PISCO;
+          el contraste no es una validación independiente."
+        )
+      ),
+      div(class = "pcb-divider"),
+      # Columna 3: alcance y límite
+      div(
+        class = "pcb-block pcb-block-scope",
+        tags$span(class = "pcb-label", icon("bullseye", class = "me-1"), "ALCANCE Y LÍMITES"),
+        tags$p(class = "pcb-text",
+          "Apropiado para análisis de ",
+          tags$strong("patrones climáticos a escala distrital y provincial"),
+          ", comparación territorial y planificación de primer nivel.
+          La temperatura 2021–2025 extiende el periodo con el sesgo histórico calibrado,
+          no con datos PISCO nuevos. Vea ",
+          tags$a(href = "#", onclick = "Shiny.setInputValue('main_nav', 'Datos & Metodología', {priority: 'event'});",
+                 "Datos & Metodología", class = "pcb-link"),
+          " para el detalle completo del flujo metodológico."
+        )
+      )
+    )
   ),
+
   div(
     class = "app-navigation",
     div(

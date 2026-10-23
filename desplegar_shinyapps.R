@@ -7,6 +7,17 @@ if (dir.exists(".r-library")) {
   .libPaths(c(file.path(getwd(), ".r-library"), .libPaths()))
 }
 
+# En Windows, los paquetes de la app y rsconnect pueden estar en la biblioteca
+# del usuario, fuera de las rutas cargadas por Rscript en esta sesión.
+version_r <- paste(R.version$major, strsplit(R.version$minor, "\\.")[[1]][1], sep = ".")
+bibliotecas_usuario <- c(
+  file.path(Sys.getenv("LOCALAPPDATA"), "R", "win-library", version_r),
+  file.path(Sys.getenv("USERPROFILE"), "AppData", "Local", "R", "win-library", version_r)
+)
+for (biblioteca_usuario in unique(bibliotecas_usuario)) {
+  if (dir.exists(biblioteca_usuario)) .libPaths(c(biblioteca_usuario, .libPaths()))
+}
+
 options(repos = c(CRAN = "https://packagemanager.posit.co/cran/__linux__/jammy/latest"))
 
 suppressPackageStartupMessages({
@@ -50,11 +61,20 @@ archivos_despliegue <- c(
 )
 
 archivos_despliegue <- gsub("^\\./", "", archivos_despliegue)
-archivos_despliegue <- archivos_despliegue[file.exists(archivos_despliegue)]
+faltantes <- archivos_despliegue[!file.exists(archivos_despliegue)]
+if (length(faltantes)) {
+  stop("Faltan archivos necesarios para el despliegue: ", paste(faltantes, collapse = ", "))
+}
+archivos_despliegue <- unique(archivos_despliegue)
 
 tamanio_mb <- sum(file.info(archivos_despliegue)$size) / 1024^2
 cat(sprintf("📦 Archivos a empaquetar: %d archivos\n", length(archivos_despliegue)))
 cat(sprintf("📊 Tamaño estimado del paquete: %.2f MiB\n\n", tamanio_mb))
+
+if (identical(Sys.getenv("SHINY_DEPLOY_DRY_RUN"), "1")) {
+  cat(paste(archivos_despliegue, collapse = "\n"), "\n")
+  quit(save = "no", status = 0)
+}
 
 cuentas <- rsconnect::accounts()
 if (nrow(cuentas) == 0) {
