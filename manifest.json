@@ -79,7 +79,7 @@
     "base64enc": {
       "Source": "CRAN",
       "Repository": null,
-      "description": null
+      "description": {"Package": "base64enc", "Version": "0.1-6"}
     },
     "bslib": {
       "Source": "CRAN",
@@ -192,7 +192,7 @@
     "commonmark": {
       "Source": "CRAN",
       "Repository": null,
-      "description": null
+      "description": {"Package": "commonmark", "Version": "2.0.0"}
     },
     "digest": {
       "Source": "CRAN",
@@ -296,7 +296,7 @@
     "fs": {
       "Source": "CRAN",
       "Repository": null,
-      "description": null
+      "description": {"Package": "fs", "Version": "2.1.0"}
     },
     "glue": {
       "Source": "CRAN",
@@ -719,7 +719,7 @@
     "rappdirs": {
       "Source": "CRAN",
       "Repository": null,
-      "description": null
+      "description": {"Package": "rappdirs", "Version": "0.3.4"}
     },
     "rlang": {
       "Source": "CRAN",
@@ -828,7 +828,7 @@
     "sourcetools": {
       "Source": "CRAN",
       "Repository": null,
-      "description": null
+      "description": {"Package": "sourcetools", "Version": "0.1.7-2"}
     },
     "withr": {
       "Source": "CRAN",
