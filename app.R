@@ -5,8 +5,8 @@
 # Periodo de Monitoreo: 2001–2025 (25 Años)
 # ==============================================================================
 
-# En Connect Cloud desde GitHub no se incluyen los rásteres locales. En ese
-# caso, servir la edición distrital autónoma incluida en el repositorio.
+# Si los datos de la edición completa no están presentes, servir la edición
+# distrital autónoma. En GitHub los rásteres grandes se guardan por partes.
 if (identical(Sys.getenv("ANTA_CLOUD_LITE"), "1") ||
     !file.exists("app_data/resumen_distrital.rds")) {
   shiny::shinyAppDir("cloud_lite")
@@ -54,6 +54,7 @@ if (!requireNamespace("writexl", quietly = TRUE)) {
 
 # Cargar funciones auxiliares y módulos analíticos
 source("R/utils_data.R", encoding = "UTF-8")
+source("R/github_rasters.R", encoding = "UTF-8")
 source("R/mod_guia_indicadores.R", encoding = "UTF-8")
 source("R/mod_portada_situacion.R", encoding = "UTF-8")
 source("R/mod_clima_anual.R", encoding = "UTF-8")
@@ -64,6 +65,7 @@ source("R/mod_consulta_ubicacion.R", encoding = "UTF-8")
 source("R/mod_metodologia_datos.R", encoding = "UTF-8")
 
 # Carga de datos optimizados compartidos en memoria (una sola vez por proceso)
+ensure_github_rasters()
 app_data <- load_app_data()
 
 # ── Interfaz de Usuario (UI) ──────────────────────────────────────────────────

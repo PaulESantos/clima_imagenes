@@ -1,6 +1,6 @@
 # Clima de Anta — beta referencial
 
-Aplicación Shiny para explorar estimaciones anuales de precipitación, temperatura e indicadores derivados en la provincia de Anta, Cusco, durante 2001–2025. El código y los resúmenes agregados pueden publicarse; los registros originales de estaciones, insumos de procesamiento, rásteres grandes y productos intermedios permanecen locales.
+Aplicación Shiny para explorar estimaciones anuales de precipitación, temperatura e indicadores derivados en la provincia de Anta, Cusco, durante 2001–2025. El repositorio publica el código, los datos finales necesarios para ejecutar la app completa y los resúmenes agregados. Los registros originales de estaciones y los insumos de procesamiento permanecen locales.
 
 **Alcance científico.** Son resultados de modelos matemáticos ajustados con productos PISCO, no mediciones en cada píxel. El tamaño de celda de 30 m no expresa precisión instrumental. Solo se dispone de Ancachuro y Soraypampa dentro del territorio para contraste puntual; esas estaciones pudieron alimentar PISCO. El contraste detectó sesgos locales, especialmente de temperatura en Soraypampa. Los mapas sirven para explorar patrones generales; las decisiones sobre parcelas, obras o disponibilidad de agua requieren datos y estudios locales. Véanse [auditoría técnica](AUDITORIA_VALIDEZ_TECNICA_2026-10-21.md) y [contraste de estaciones](VALIDACION_RED_ESTACIONES_2026-10-21.md).
 
@@ -12,7 +12,7 @@ Aplicación Shiny para explorar estimaciones anuales de precipitación, temperat
 | `public_data/` | Copias públicas de series, resumen con nombres de campos corregidos, métricas agregadas de estaciones y límites distritales | GitHub y Netlify |
 | `www/custom.css`, `www/logo_anta.jpg`, informes de auditoría vigentes | Presentación y límites de uso | GitHub |
 | `estaciones/`, `data_vectorial/`, `auditoria_*`, documentos metodológicos antiguos, archivos de sesión | Insumos originales, trabajo y resultados auxiliares | Solo local |
-| `Clima_Anta/`, `app_data/` | Rásteres finales, caché RDS, tablas internas y mapas que necesita Shiny | Local; solo los archivos necesarios se incluyen en el paquete del servidor Shiny |
+| `Clima_Anta/`, `app_data/` | Solo rásteres finales y datos preparados que necesita Shiny; los dos TIFF mayores de 100 MB se guardan en partes | GitHub y servidor Shiny |
 
 `.gitignore` aplica una lista permitida: cualquier archivo nuevo permanece fuera del repositorio hasta revisarlo. Antes de cada publicación, comprobar la lista real de archivos con `git status --short --untracked-files=all` y `git ls-files`.
 
@@ -38,11 +38,11 @@ La aplicación interactiva se mantiene en un servidor R Shiny. Netlify sirve el 
 
 Para probar el portal localmente en PowerShell: `$env:SHINY_APP_URL='https://ejemplo.shinyapps.io/clima_anta_30m/'; node scripts/build_portal.mjs`. El directorio `dist/` generado queda fuera de Git. La URL de ejemplo solo sirve para la prueba local; no representa una aplicación desplegada.
 
-`desplegar_shinyapps.R` es un despliegue a un servidor Shiny, no a Netlify. El código en GitHub por sí solo no ejecuta la aplicación porque los rásteres finales y el caché espacial grande permanecen locales.
+`desplegar_shinyapps.R` es un despliegue a un servidor Shiny, no a Netlify. La app completa también puede ejecutarse desde los archivos finales incluidos en GitHub.
 
 ## Publicación directa en Posit Connect Cloud
 
-`desplegar_connect_cloud.R` publica la aplicación Shiny directamente desde este equipo. Incluye únicamente el código, los datos preparados de `app_data/` y los cinco rásteres finales que carga la app. Los CSV originales de `estaciones/` y los demás insumos de trabajo quedan fuera del paquete. La publicación por GitHub no sirve para esta app completa mientras los rásteres sigan fuera del repositorio.
+`desplegar_connect_cloud.R` publica la aplicación Shiny directamente desde este equipo. Incluye únicamente el código, los datos preparados de `app_data/` y los cinco rásteres finales que carga la app. Los CSV originales de `estaciones/` y los demás insumos de trabajo quedan fuera del paquete.
 
 1. Ejecutar `Rscript scripts/test_app.R` y revisar el paquete con `$env:CONNECT_CLOUD_DRY_RUN='1'; Rscript desplegar_connect_cloud.R` en PowerShell.
 2. Conectar una cuenta de Posit Connect Cloud mediante `rsconnect::connectCloudUser()` en una sesión interactiva de R. El inicio de sesión se autoriza en el navegador; no guardar credenciales en el repositorio.
@@ -53,4 +53,6 @@ Para probar el portal localmente en PowerShell: `$env:SHINY_APP_URL='https://eje
 
 `cloud_lite/` es una aplicación Shiny autónoma que usa solo las copias públicas de series, resumen territorial, contraste de estaciones y límites distritales. Permite explorar series anuales y comparar distritos; no ofrece mapas de celdas ni consulta puntual de 30 m. Sus datos son estimaciones modeladas, no lecturas locales. Los archivos de `cloud_lite/www/data/` se copian de `public_data/` y deben actualizarse juntos cuando cambien los datos.
 
-En Connect Cloud puede seleccionar **`cloud_lite/app.R`** o el **`app.R` de la raíz** como archivo primario. Cada uno tiene un `manifest.json` en su misma carpeta. Al iniciarse desde la raíz sin los rásteres locales, `app.R` abre automáticamente la edición agregada de `cloud_lite/`. Ambos manifiestos declaran solo las dependencias de esa edición y fijan R 4.6.0. Vuelva a publicar el último commit de GitHub y verifique la app en la URL que entregue Connect Cloud antes de difundirla.
+En Connect Cloud puede seleccionar **`cloud_lite/app.R`** para la edición agregada o el **`app.R` de la raíz** para la app completa. Cada uno tiene su propio `manifest.json`. El manifiesto de la raíz declara las dependencias espaciales; la app reconstruye sus dos TIFF grandes desde `Clima_Anta/github_parts/` y verifica tamaño y MD5 antes de cargarlos. Si faltan los datos completos, `app.R` abre la edición agregada. Después de publicar desde GitHub, verifique los mapas y la consulta puntual en la URL del servicio antes de difundirla.
+
+Para actualizar los rásteres finales en GitHub, ejecute desde la raíz `Rscript scripts/preparar_rasters_github.R` y `Rscript scripts/generar_manifest_github.R`. El primer script crea una copia GeoTIFF con compresión ZSTD y comprueba que los valores y la geometría sean idénticos; luego la divide en partes de hasta 80 MiB. Compruebe los archivos con `git status --short --untracked-files=all` antes de confirmar el cambio. Los TIFF originales de precipitación y temperatura de 30 m no se agregan a Git porque cada uno supera 100 MB; solo las partes comprimidas entran al repositorio.
