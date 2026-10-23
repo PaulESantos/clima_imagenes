@@ -39,3 +39,18 @@ La aplicación interactiva se mantiene en un servidor R Shiny. Netlify sirve el 
 Para probar el portal localmente en PowerShell: `$env:SHINY_APP_URL='https://ejemplo.shinyapps.io/clima_anta_30m/'; node scripts/build_portal.mjs`. El directorio `dist/` generado queda fuera de Git. La URL de ejemplo solo sirve para la prueba local; no representa una aplicación desplegada.
 
 `desplegar_shinyapps.R` es un despliegue a un servidor Shiny, no a Netlify. El código en GitHub por sí solo no ejecuta la aplicación porque los rásteres finales y el caché espacial grande permanecen locales.
+
+## Publicación directa en Posit Connect Cloud
+
+`desplegar_connect_cloud.R` publica la aplicación Shiny directamente desde este equipo. Incluye únicamente el código, los datos preparados de `app_data/` y los cinco rásteres finales que carga la app. Los CSV originales de `estaciones/` y los demás insumos de trabajo quedan fuera del paquete. La publicación por GitHub no sirve para esta app completa mientras los rásteres sigan fuera del repositorio.
+
+1. Ejecutar `Rscript scripts/test_app.R` y revisar el paquete con `$env:CONNECT_CLOUD_DRY_RUN='1'; Rscript desplegar_connect_cloud.R` en PowerShell.
+2. Conectar una cuenta de Posit Connect Cloud mediante `rsconnect::connectCloudUser()` en una sesión interactiva de R. El inicio de sesión se autoriza en el navegador; no guardar credenciales en el repositorio.
+3. Ejecutar `Rscript desplegar_connect_cloud.R`. El script exige una sola cuenta de Connect Cloud configurada, despliega con visibilidad pública y reutiliza la aplicación `clima_anta_30m` al actualizarla.
+4. Verificar la URL que entregue Connect Cloud, la carga de mapas y consultas, y que la configuración de Sharing permita acceso público antes de difundirla. Si se mantiene el portal Netlify, usar esa URL como `SHINY_APP_URL`.
+
+## Edición agregada para Posit Connect Cloud desde GitHub
+
+`cloud_lite/` es una aplicación Shiny autónoma que usa solo las copias públicas de series, resumen territorial, contraste de estaciones y límites distritales. Permite explorar series anuales y comparar distritos; no ofrece mapas de celdas ni consulta puntual de 30 m. Sus datos son estimaciones modeladas, no lecturas locales. Los archivos de `cloud_lite/www/data/` se copian de `public_data/` y deben actualizarse juntos cuando cambien los datos.
+
+El archivo primario para Connect Cloud es **`cloud_lite/app.R`**, no el `app.R` de la raíz. `cloud_lite/manifest.json` está en la misma carpeta y declara las dependencias R; se generó con `rsconnect::writeManifest()` y se fijó a R 4.6.0, versión admitida por Connect Cloud en octubre de 2026. Publique el repositorio en GitHub y seleccione `cloud_lite/app.R` como archivo primario en Connect Cloud. Después verifique la app en la URL que entregue el servicio antes de difundirla.

@@ -9,6 +9,7 @@
 !/correccion_clima_gee_pisco.R
 !/preparar_datos_app.R
 !/desplegar_shinyapps.R
+!/desplegar_connect_cloud.R
 !/desplegar_shinyapps.ps1
 !/iniciar_app.ps1
 !/netlify.toml
@@ -21,6 +22,7 @@
 !/docs/
 !/portal/
 !/public_data/
+!/cloud_lite/
 
 # Solo código y recursos de interfaz en estas carpetas.
 /R/*
@@ -42,6 +44,20 @@
 !/public_data/resumen_hidroclimatico_distrital_anta.csv
 !/public_data/validacion_red_estaciones.csv
 !/public_data/distritos_anta.geojson
+
+# Edición agregada y autónoma para Posit Connect Cloud desde GitHub.
+/cloud_lite/*
+!/cloud_lite/app.R
+!/cloud_lite/manifest.json
+!/cloud_lite/www/
+/cloud_lite/www/*
+!/cloud_lite/www/styles.css
+!/cloud_lite/www/data/
+/cloud_lite/www/data/*
+!/cloud_lite/www/data/series_anuales_2001_2025_anta.csv
+!/cloud_lite/www/data/resumen_hidroclimatico_distrital_anta.csv
+!/cloud_lite/www/data/validacion_red_estaciones.csv
+!/cloud_lite/www/data/distritos_anta.geojson
 
 /docs/*
 !/docs/*.md
